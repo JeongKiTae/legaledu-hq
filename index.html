@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>교육팀 운영센터</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2b66ff">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="교육팀 운영센터">
+<script>
+  /* ▼▼ 웹앱 주소 (Apps Script 배포 → 배포 관리에 있는 '웹 앱 URL', 끝이 /exec) ▼▼ */
+  const APP_URL = 'https://script.google.com/a/macros/lawtimes.co.kr/s/AKfycbzBFn3BhaMxXqZBYcrA-0KgYKnVy_Culfn6Y-k2j3bd5Uw_RHqtrcHK1GQ8vwP82xvm/exec';
+  /* ▲▲ 여기만 바꾸면 됩니다 ▲▲ */
+
+  // 설치된 앱으로 실행했으면 바로 웹앱으로 이동 (뒤로 와서 다시 돌아온 경우는 버튼을 보여 줌)
+  const isApp = matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: minimal-ui)').matches || navigator.standalone === true || location.search.indexOf('app=1') >= 0;
+  let returned = false;
+  try { returned = sessionStorage.getItem('opened') === '1'; } catch (e) {}
+  if (isApp && !returned) {
+    try { sessionStorage.setItem('opened', '1'); } catch (e) {}
+    location.replace(APP_URL);
+  }
+</script>
+<style>
+  :root { --pri:#2b66ff; --text:#1b2230; --sub:#667085; --line:#e7e9ee; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; color: var(--text);
+    background: radial-gradient(900px 500px at 10% -10%, #e3e9ff 0%, transparent 60%), radial-gradient(700px 400px at 110% 110%, #efe7ff 0%, transparent 55%), #f5f6f8;
+    display: grid; place-items: center; padding: 24px; }
+  .card { width: 100%; max-width: 380px; background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 32px 26px 26px; text-align: center; box-shadow: 0 24px 60px rgba(16,24,40,.08); }
+  .icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 6px 18px rgba(16,24,40,.12); border: 1px solid var(--line); }
+  h1 { font-size: 21px; margin: 16px 0 4px; }
+  p.sub { margin: 0 0 22px; color: var(--sub); font-size: 14px; }
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 12px; border: 0; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; margin-top: 10px; }
+  .pri { background: var(--pri); color: #fff; }
+  .ghost { background: #eef2ff; color: var(--pri); }
+  .guide { text-align: left; background: #f8f9fb; border-radius: 12px; padding: 14px 16px; margin-top: 18px; font-size: 13px; color: #475467; line-height: 1.6; }
+  .guide b { color: var(--text); }
+  .guide ol { margin: 6px 0 0; padding-left: 18px; }
+  .hide { display: none; }
+  .done { color: #0e8a4f; font-weight: 700; font-size: 14px; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="icon" src="icon-192.png" alt="리걸에듀">
+    <h1>교육팀 운영센터</h1>
+    <p class="sub">법률신문 리걸에듀 교육팀</p>
+
+    <button class="btn pri hide" id="installBtn">📲 앱으로 설치하기</button>
+    <div class="done hide" id="doneMsg">✓ 설치했습니다. 앱스 화면에서 '교육팀 운영센터'를 눌러 주세요.</div>
+    <a class="btn ghost" id="openBtn" href="#">바로 열기</a>
+
+    <div class="guide" id="guideAndroid">
+      <b>안드로이드 (크롬)</b>
+      <ol>
+        <li>위 <b>앱으로 설치하기</b> 버튼을 누릅니다.</li>
+        <li>버튼이 안 보이면 크롬 오른쪽 위 <b>⋮ → 설치 및 바로가기 만들기 → 설치</b></li>
+        <li>앱스 화면에 <b>교육팀 운영센터</b> 아이콘이 생깁니다.</li>
+      </ol>
+    </div>
+    <div class="guide hide" id="guideIos">
+      <b>아이폰 (사파리)</b>
+      <ol>
+        <li>아래쪽 <b>공유(□↑)</b> 버튼을 누릅니다.</li>
+        <li><b>홈 화면에 추가</b> → <b>추가</b></li>
+        <li>홈 화면과 앱 보관함에 아이콘이 생깁니다.</li>
+      </ol>
+    </div>
+  </div>
+
+<script>
+  document.getElementById('openBtn').href = APP_URL;
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+    document.getElementById('guideIos').classList.remove('hide');
+    document.getElementById('guideAndroid').classList.add('hide');
+  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+  let deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e;
+    document.getElementById('installBtn').classList.remove('hide');
+  });
+  document.getElementById('installBtn').addEventListener('click', async function () {
+    if (!deferred) return;
+    deferred.prompt();
+    const r = await deferred.userChoice;
+    deferred = null;
+    if (r && r.outcome === 'accepted') {
+      this.classList.add('hide');
+      document.getElementById('doneMsg').classList.remove('hide');
+    }
+  });
+  window.addEventListener('appinstalled', function () {
+    document.getElementById('installBtn').classList.add('hide');
+    document.getElementById('doneMsg').classList.remove('hide');
+  });
+</script>
+</body>
+</html>
